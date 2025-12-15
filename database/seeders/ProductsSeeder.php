@@ -41,7 +41,7 @@ class ProductsSeeder extends Seeder
             try {
                 ProductImage::firstOrCreate([
                     'product_id' => $prod->id,
-                    'image_path' => 'products/8mwKowzxGLIqsPBo55p0lc9zfLZoSUOUX44iBuey.jpg',
+                    'image_path' => 'products/ZKostM91uiEG7vywdSdXQhXyeJv0lFOJAdq02Vra.jpg',
                 ]);
             } catch (\Throwable $e) {
                 // silently ignore if model/table isn't available during certain runs

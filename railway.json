@@ -6,6 +6,10 @@
   "deploy": {
     "runtime": "V2",
     "numReplicas": 1,
+    "startCommand": "php artisan serve",
+    "preDeployCommand": [
+      "composer install && cp .env.example .env && php artisan key:generate && php artisan migrate --force && php artisan db:seed --force && npm run build "
+    ],
     "sleepApplication": false,
     "useLegacyStacker": false,
     "multiRegionConfig": {

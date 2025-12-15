@@ -7,6 +7,7 @@ use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class CartService
 {
@@ -28,8 +29,15 @@ class CartService
 
         $cartItem = $cart->items()->where('product_id', $productId)->first();
 
+        $currentQty = $cartItem ? $cartItem->quantity : 0;
+        $desiredQty = $currentQty + $quantity;
+
+        if ($desiredQty > $product->stock) {
+            throw ValidationException::withMessages(['quantity' => "Cannot add more than available stock ({$product->stock})."]);
+        }
+
         if ($cartItem) {
-            $cartItem->increment('quantity', $quantity);
+            $cartItem->update(['quantity' => $desiredQty]);
         } else {
             $cart->items()->create([
                 'product_id' => $productId,
@@ -43,6 +51,12 @@ class CartService
     public function updateQuantity($itemId, $quantity)
     {
         $cartItem = CartItem::findOrFail($itemId);
+        $product = $cartItem->product;
+
+        if ($quantity > $product->stock) {
+            throw ValidationException::withMessages(['quantity' => "Requested quantity exceeds available stock ({$product->stock})."]);
+        }
+
         $cartItem->update(['quantity' => $quantity]);
         return $cartItem;
     }

@@ -83,17 +83,21 @@ class ProductController extends Controller
         $product->save();
 
         if ($request->hasFile('image')) {
-            // Delete old image if exists (optional, but good practice)
-            // $oldImage = $product->images()->first();
-            // if ($oldImage) {
-            //     Storage::disk('public')->delete($oldImage->image_path);
-            //     $oldImage->delete();
-            // }
-            
             $path = $request->file('image')->store('products', 'public');
-            // For simplicity, just adding a new image or replacing the first one
-            // Let's just add it for now, or replace if we want single image logic
-             $product->images()->create(['image_path' => $path]);
+
+            // If product already has images, replace the first one (keep single-image logic)
+            $oldImage = $product->images()->first();
+            if ($oldImage) {
+                // delete old file from storage if present
+                try {
+                    Storage::disk('public')->delete($oldImage->image_path);
+                } catch (\Throwable $e) {
+                    // ignore deletion errors
+                }
+                $oldImage->update(['image_path' => $path]);
+            } else {
+                $product->images()->create(['image_path' => $path]);
+            }
         }
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
