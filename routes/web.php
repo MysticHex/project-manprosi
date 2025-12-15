@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
     // User orders (tracking)
     Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}/track', [App\Http\Controllers\OrderController::class, 'track'])->name('orders.track');
+    Route::post('/orders/{order}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
 // Admin Routes
@@ -40,6 +41,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
 
     Route::resource('products', AdminProductController::class);
+        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['show']);
 });
 
 // Dashboard & Profile

@@ -36,6 +36,7 @@
                                 <div class="mt-4 flex gap-2">
                                     <a href="{{ route('admin.products.index') }}" class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Manage Products</a>
                                     <a href="{{ route('admin.orders.index') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Manage Orders</a>
+                                    <a href="{{ route('admin.categories.index') }}" class="inline-block bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded">Manage Categories</a>
                                 </div>
                             </div>
                         </div>

@@ -42,7 +42,10 @@
                     <div class="space-y-4 mb-6">
                         @foreach($cart->items as $item)
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">{{ $item->product->name }} x {{ $item->quantity }}</span>
+                                <div>
+                                    <div class="text-gray-600">{{ $item->product->name }} x {{ $item->quantity }}</div>
+                                    <div class="text-xs text-gray-500 mt-1">Stok: {{ $item->product->stock }}</div>
+                                </div>
                                 <span class="font-medium text-gray-900">Rp {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}</span>
                             </div>
                         @endforeach

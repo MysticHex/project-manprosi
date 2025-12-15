@@ -17,7 +17,16 @@
                     </div>
                     <div class="text-right">
                         <div class="mb-2">Status: <span class="font-medium">{{ ucfirst($order->status) }}</span></div>
-                        <a href="{{ route('orders.track', $order) }}" class="inline-block bg-blue-600 text-white px-3 py-2 rounded">Track</a>
+                        <div class="flex items-center gap-2 justify-end">
+                            <a href="{{ route('orders.track', $order) }}" class="inline-block bg-blue-600 text-white px-3 py-2 rounded">Track</a>
+
+                            @if(strtolower($order->status) === 'pending')
+                                <form action="{{ route('orders.cancel', $order) }}" method="POST" onsubmit="return confirm('Batalkan pesanan ini?');">
+                                    @csrf
+                                    <button type="submit" class="inline-block bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded">Batalkan</button>
+                                </form>
+                            @endif
+                        </div>
                     </div>
                 </div>
             @endforeach

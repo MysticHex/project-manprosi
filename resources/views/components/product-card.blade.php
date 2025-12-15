@@ -25,6 +25,13 @@
             </div>
             <span class="text-xs text-gray-500 ml-2">(4.5)</span>
         </div>
+        <div class="text-sm text-gray-500 mb-2">
+            @if($product->stock > 0)
+                <span class="inline-block px-2 py-1 bg-green-50 text-green-700 rounded">Stok: {{ $product->stock }}</span>
+            @else
+                <span class="inline-block px-2 py-1 bg-red-50 text-red-700 rounded">Stok: 0 (Habis)</span>
+            @endif
+        </div>
         <div class="flex items-center justify-between">
             <span class="text-xl font-bold text-gray-900">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
             <form action="{{ route('cart.store') }}" method="POST">

@@ -19,10 +19,14 @@
             </div>
             <div class="flex items-center space-x-4">
                 <div class="relative">
-                    <input type="text" placeholder="Search products..." class="w-64 pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500">
-                    <div class="absolute left-3 top-2.5 text-gray-400">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
+                    <form action="{{ route('products.index') }}" method="GET">
+                        <div class="relative">
+                            <input name="search" type="search" placeholder="Search products..." value="{{ request('search') }}" class="w-64 pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500">
+                            <button type="submit" class="absolute left-3 top-2.5 text-gray-400">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 
                 @auth
@@ -41,7 +45,16 @@
                                 <a href="{{ route('orders.index') }}" class="text-sm text-gray-600 hover:text-green-600">My Orders</a>
                             @endif
                             @if(auth()->user()->isAdmin())
-                                <a href="{{ route('admin.products.index') }}" class="text-sm text-gray-600 hover:text-green-600">Admin</a>
+                                <div class="relative inline-block text-left">
+                                    <button id="admin-menu-button" type="button" class="text-sm text-gray-600 hover:text-green-600 focus:outline-none">Admin</button>
+                                    <div id="admin-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
+                                        <div class="py-1">
+                                            <a href="{{ route('admin.products.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Manage Products</a>
+                                            <a href="{{ route('admin.categories.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Manage Categories</a>
+                                            <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Manage Orders</a>
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
                             <div class="relative">
                                 <button id="user-menu-button" type="button" class="flex items-center text-gray-600 hover:text-green-600 focus:outline-none">
@@ -82,6 +95,22 @@
         });
         document.addEventListener('click', function(e){
             if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                if (!menu.classList.contains('hidden')) menu.classList.add('hidden');
+            }
+        });
+    })();
+</script>
+<script>
+    (function(){
+        const btn = document.getElementById('admin-menu-button');
+        const menu = document.getElementById('admin-menu');
+        if (!btn || !menu) return;
+        btn.addEventListener('click', function(e){
+            e.preventDefault();
+            menu.classList.toggle('hidden');
+        });
+        document.addEventListener('click', function(e){
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
                 if (!menu.classList.contains('hidden')) menu.classList.add('hidden');
             }
         });
