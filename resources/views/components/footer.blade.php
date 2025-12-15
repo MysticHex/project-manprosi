@@ -16,9 +16,17 @@
             <div>
                 <h4 class="font-semibold mb-4">Categories</h4>
                 <ul class="space-y-2 text-sm text-gray-400">
-                    <li><a href="#" class="hover:text-white">Vegetables</a></li>
-                    <li><a href="#" class="hover:text-white">Fruits</a></li>
-                    <li><a href="#" class="hover:text-white">Meat</a></li>
+                    @if(isset($categories) && $categories->count())
+                        @foreach($categories as $category)
+                            <li>
+                                <a href="{{ url('categories/' . ($category->slug ?? $category->id)) }}" class="hover:text-white">{{ $category->name }}</a>
+                            </li>
+                        @endforeach
+                    @else
+                        <li><a href="#" class="hover:text-white">Vegetables</a></li>
+                        <li><a href="#" class="hover:text-white">Fruits</a></li>
+                        <li><a href="#" class="hover:text-white">Meat</a></li>
+                    @endif
                 </ul>
             </div>
             <div>

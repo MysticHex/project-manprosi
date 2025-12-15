@@ -54,15 +54,19 @@
                         </div>
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500">Shipping Address</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $order->shipping_address }}</dd>
+                            @if(is_array($order->shipping_address))
+                                <dd class="mt-1 text-sm text-gray-900">{!! nl2br(e($order->shipping_address['address'] ?? json_encode($order->shipping_address))) !!}</dd>
+                            @else
+                                <dd class="mt-1 text-sm text-gray-900">{{ $order->shipping_address }}</dd>
+                            @endif
                         </div>
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500">Payment Method</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ ucfirst($order->payment_method) }}</dd>
+                            <dd class="mt-1 text-sm text-gray-900">{{ $order->payment_method ? ucfirst($order->payment_method) : 'Not specified' }}</dd>
                         </div>
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500">Total Amount</dt>
-                            <dd class="mt-1 text-2xl font-bold text-green-600">Rp {{ number_format($order->total_price, 0, ',', '.') }}</dd>
+                            <dd class="mt-1 text-2xl font-bold text-green-600">Rp {{ number_format($order->total, 0, ',', '.') }}</dd>
                         </div>
                     </dl>
 

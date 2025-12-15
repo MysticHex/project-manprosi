@@ -36,9 +36,32 @@
                     </a>
 
                     <div class="relative ml-3">
-                        <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-green-600">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </a>
+                        <div class="flex items-center space-x-2">
+                            @if(!auth()->user()->isAdmin())
+                                <a href="{{ route('orders.index') }}" class="text-sm text-gray-600 hover:text-green-600">My Orders</a>
+                            @endif
+                            @if(auth()->user()->isAdmin())
+                                <a href="{{ route('admin.products.index') }}" class="text-sm text-gray-600 hover:text-green-600">Admin</a>
+                            @endif
+                            <div class="relative">
+                                <button id="user-menu-button" type="button" class="flex items-center text-gray-600 hover:text-green-600 focus:outline-none">
+                                    <span class="sr-only">Open user menu</span>
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                </button>
+                                <div id="user-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
+                                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
+                                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                                        @if(!auth()->user()->isAdmin())
+                                            <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Order History</a>
+                                        @endif
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="text-sm font-medium text-gray-500 hover:text-green-600">Log in</a>
@@ -48,3 +71,19 @@
         </div>
     </div>
 </nav>
+<script>
+    (function(){
+        const btn = document.getElementById('user-menu-button');
+        const menu = document.getElementById('user-menu');
+        if (!btn || !menu) return;
+        btn.addEventListener('click', function(e){
+            e.preventDefault();
+            menu.classList.toggle('hidden');
+        });
+        document.addEventListener('click', function(e){
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                if (!menu.classList.contains('hidden')) menu.classList.add('hidden');
+            }
+        });
+    })();
+</script>

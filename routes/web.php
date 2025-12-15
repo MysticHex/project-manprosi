@@ -25,6 +25,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('orders.success');
+    // User orders (tracking)
+    Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}/track', [App\Http\Controllers\OrderController::class, 'track'])->name('orders.track');
 });
 
 // Admin Routes
@@ -37,8 +40,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 });
 
 // Dashboard & Profile
+use App\Models\Product;
+use App\Models\Order;
+
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $adminStats = null;
+    if (auth()->check() && auth()->user()->isAdmin()) {
+        $adminStats = [
+            'total_products' => Product::count(),
+            'pending_orders' => Order::where('status', 'pending')->count(),
+            'recent_orders' => Order::with('user')->latest()->take(5)->get(),
+        ];
+    }
+
+    return view('dashboard', compact('adminStats'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

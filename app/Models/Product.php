@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = ['user_id', 'category_id', 'brand_id', 'name', 'slug', 'description', 'price', 'stock'];
+    protected $fillable = ['user_id', 'category_id', 'name', 'slug', 'description', 'price', 'stock'];
 
     public function user()
     {
@@ -16,10 +16,7 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function brand()
-    {
-        return $this->belongsTo(Brand::class);
-    }
+    // brand relation removed as Brand entity has been removed
     public function images()
     {
         return $this->hasMany(ProductImage::class);
