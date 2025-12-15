@@ -46,15 +46,11 @@
                                 <span class="font-medium text-gray-900">Rp {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}</span>
                             </div>
                         @endforeach
-                        <div class="flex justify-between text-sm border-t pt-4">
-                            <span class="text-gray-600">Shipping (Flat Rate)</span>
-                            <span class="font-medium text-gray-900">Rp {{ number_format($shippingCost, 0, ',', '.') }}</span>
-                        </div>
                     </div>
                     <div class="border-t border-gray-200 pt-4 mb-6">
                         <div class="flex justify-between">
                             <span class="text-lg font-bold text-gray-900">Total</span>
-                            <span class="text-lg font-bold text-gray-900">Rp {{ number_format($cart->items->sum(fn($item) => $item->product->price * $item->quantity) + $shippingCost, 0, ',', '.') }}</span>
+                            <span class="text-lg font-bold text-gray-900">Rp {{ number_format($cart->items->sum(fn($item) => $item->product->price * $item->quantity) + ($shippingCost ?? 15000), 0, ',', '.') }}</span>
                         </div>
                     </div>
                     <button type="submit" form="checkout-form" class="block w-full bg-green-600 text-white text-center px-4 py-3 rounded-md font-semibold hover:bg-green-700 transition-colors">

@@ -24,6 +24,9 @@ Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.dest
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/bank/{order}', [CheckoutController::class, 'bankShow'])->name('checkout.bank.show');
+    Route::post('/checkout/bank/{order}/upload', [CheckoutController::class, 'uploadProof'])->name('checkout.bank.upload');
+    Route::post('/checkout/bank/{order}/confirm', [CheckoutController::class, 'confirmUpload'])->name('checkout.bank.confirm');
     Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('orders.success');
     // User orders (tracking)
     Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');

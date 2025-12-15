@@ -3,11 +3,17 @@
     <div class="bg-green-50 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-2 bg-green-600 rounded-2xl p-8 text-white h-96 flex flex-col justify-center relative overflow-hidden">
+                <div
+                    class="md:col-span-2 bg-green-600 rounded-2xl p-8 text-white h-96 flex flex-col justify-center relative overflow-hidden">
                     <div class="relative z-10">
-                        <h1 class="text-4xl font-bold mb-4">Layanan Katering Profesional<br/>Untuk Acara dan Kebutuhan Harian</h1>
-                        <p class="mb-6 text-green-100">Kami adalah perusahaan katering yang menyediakan menu berkualitas untuk acara, pertemuan, dan kebutuhan harian — menyiapkan menu sesuai permintaan dengan bahan segar dari petani lokal.</p>
-                        <a href="{{ route('products.index') }}" class="inline-block bg-white text-green-600 px-6 py-3 rounded-full font-semibold hover:bg-green-50 transition-colors">Lihat Menu Katering</a>
+                        <h1 class="text-4xl font-bold mb-4">Layanan Katering Profesional<br />Untuk Acara dan Kebutuhan
+                            Harian</h1>
+                        <p class="mb-6 text-green-100">Kami adalah perusahaan katering yang menyediakan menu berkualitas
+                            untuk acara, pertemuan, dan kebutuhan harian — menyiapkan menu sesuai permintaan dengan
+                            bahan segar dari petani lokal.</p>
+                        <a href="{{ route('products.index') }}"
+                            class="inline-block bg-white text-green-600 px-6 py-3 rounded-full font-semibold hover:bg-green-50 transition-colors">Lihat
+                            Menu Katering</a>
                     </div>
                     <!-- Decorative circle -->
                     <div class="absolute -right-20 -bottom-40 w-80 h-80 bg-green-500 rounded-full opacity-50"></div>
@@ -15,13 +21,18 @@
                 <div class="space-y-6">
                     <div class="bg-orange-100 rounded-2xl p-6 h-44 flex flex-col justify-center">
                         <h3 class="text-xl font-bold text-orange-800 mb-2">Menu Grocery</h3>
-                        <p class="text-sm text-orange-700 mb-2">Pilihan bahan dan kebutuhan dapur yang sering dipakai untuk penyusunan menu katering dan belanja harian pelanggan.</p>
-                        <a href="{{ route('products.index') }}" class="text-orange-600 font-medium hover:underline">Lihat Menu Grocery &rarr;</a>
+                        <p class="text-sm text-orange-700 mb-2">Pilihan bahan dan kebutuhan dapur yang sering dipakai
+                            untuk penyusunan menu katering dan belanja harian pelanggan.</p>
+                        <a href="{{ route('products.index') }}"
+                            class="text-orange-600 font-medium hover:underline">Lihat Menu Grocery &rarr;</a>
                     </div>
                     <div class="bg-blue-100 rounded-2xl p-6 h-44 flex flex-col justify-center">
                         <h3 class="text-xl font-bold text-blue-800 mb-2">Layanan Katering</h3>
-                        <p class="text-sm text-blue-700 mb-2">Paket katering profesional untuk acara kecil hingga besar — tersedia paket prasmanan, kotak, dan menu khusus. Hubungi kami untuk penawaran dan kustomisasi menu.</p>
-                        <a href="#" class="text-blue-600 font-medium hover:underline">Lihat Paket Katering &rarr;</a>
+                        <p class="text-sm text-blue-700 mb-2">Paket katering profesional untuk acara kecil hingga besar
+                            — tersedia paket prasmanan, kotak, dan menu khusus. Hubungi kami untuk penawaran dan
+                            kustomisasi menu.</p>
+                        <a href="#" class="text-blue-600 font-medium hover:underline">Lihat Paket Katering
+                            &rarr;</a>
                     </div>
                 </div>
             </div>
@@ -35,7 +46,7 @@
             <a href="{{ route('products.index') }}" class="text-green-600 hover:text-green-700 font-medium">View All</a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($trendingProducts as $product)
+            @foreach ($trendingProducts as $product)
                 <x-product-card :product="$product" />
             @endforeach
         </div>
@@ -46,13 +57,23 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl font-bold text-gray-900">Best Sellers</h2>
-                <a href="{{ route('products.index') }}" class="text-green-600 hover:text-green-700 font-medium">View All</a>
+                <a href="{{ route('products.index') }}" class="text-green-600 hover:text-green-700 font-medium">View
+                    All</a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach($bestSellers as $product)
+                @foreach ($bestSellers as $product)
                     <x-product-card :product="$product" />
                 @endforeach
             </div>
         </div>
+    </div>
+    {{-- Location --}}
+    <div>
+        {{-- <iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen
+            src="https://www.google.com/maps/embed/v1/view?key={{ env('GOOGLE_MAPS_API_KEY') }}
+            &center={{ -6.8954011 }},{{ 107.5962769 }}
+            &zoom=17">
+        </iframe> --}}
+
     </div>
 </x-store-layout>
