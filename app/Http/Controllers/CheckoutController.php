@@ -30,16 +30,41 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $baseRules = [
             'address' => 'required|string',
             'payment_method' => 'required|string',
-        ]);
+        ];
 
-        $cart = $this->cartService->getCart();
-        $order = $this->orderService->createOrder(Auth::user(), $cart, $request->all());
+        // If API client sends a cart payload, validate its structure
+        if ($request->has('cart')) {
+            $request->validate(array_merge($baseRules, [
+                'cart' => 'required|array|min:1',
+                'cart.*.product_id' => 'required|exists:products,id',
+                'cart.*.quantity' => 'integer|min:1'
+            ]));
+
+            $order = $this->orderService->createOrderFromItems(Auth::user(), $request->input('cart'), $request->all());
+        } else {
+            $request->validate($baseRules);
+            $cart = $this->cartService->getCart();
+            $order = $this->orderService->createOrder(Auth::user(), $cart, $request->all());
+        }
+
+        if ($request->expectsJson()) {
+            if ($request->input('payment_method') === 'bank_transfer') {
+                return response()->json([
+                    'order' => $order,
+                    'redirect' => route('checkout.bank.show', $order->id)
+                ], 201);
+            }
+
+            return response()->json([
+                'order' => $order,
+                'redirect' => route('orders.success', $order->id)
+            ], 201);
+        }
 
         if ($request->input('payment_method') === 'bank_transfer') {
-            // redirect user to bank transfer page to show QRIS and upload proof
             return redirect()->route('checkout.bank.show', $order->id);
         }
 

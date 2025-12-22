@@ -1,0 +1,57 @@
+{
+  "info": {
+    "name": "Dapur Nurasa API - Checkout (Option A)",
+    "_postman_id": "dapur-nurasa-checkout",
+    "description": "Collection with two requests: API Login (stores token) and Checkout (single-request with cart payload).\nImport into Postman, run Login to set `token` env var, then run Checkout.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"secret\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "http://127.0.0.1:8000/api/login", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","login"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Save token to environment for subsequent requests",
+              "if (pm.response.code === 200) {",
+              "  const json = pm.response.json();",
+              "  if (json.token) { pm.environment.set('token', json.token); pm.test('token saved', () => pm.expect(json.token).to.be.a('string')); }",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Checkout (single-request)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"address\": \"Jl. Contoh 1\",\n  \"payment_method\": \"cod\",\n  \"cart\": [\n    { \"product_id\": 7, \"quantity\": 1 }\n  ]\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "http://127.0.0.1:8000/api/checkout", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","checkout"] }
+      }
+    }
+  ]
+}

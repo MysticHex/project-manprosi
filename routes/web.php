@@ -73,11 +73,25 @@ require __DIR__.'/auth.php';
 // In case routes/api.php is not loaded, provide API endpoints under /api
 // Use the stateless 'api' middleware group so CSRF/session middleware are not applied.
 Route::prefix('api')->middleware('api')->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
+    // Make /api/login stateless for API token issuance (bypass CSRF)
+    Route::post('/login', [AuthController::class, 'login'])
+        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/user', [AuthController::class, 'user']);
-        Route::post('/checkout', [CheckoutController::class, 'store']);
+        Route::post('/checkout', [CheckoutController::class, 'store'])
+            ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+        // Quick API helper to add a cart item for the authenticated token user
+        Route::post('/cart/add', function (\Illuminate\Http\Request $request) {
+            $data = $request->validate([
+                'product_id' => 'required|exists:products,id',
+                'quantity' => 'integer|min:1'
+            ]);
+
+            $cartService = app(\App\Services\CartService::class);
+            $cart = $cartService->addToCart($data['product_id'], $data['quantity'] ?? 1);
+            return response()->json(['cart' => $cart->load('items.product')]);
+        })->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
     });
 });

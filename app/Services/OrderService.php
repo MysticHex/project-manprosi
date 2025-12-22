@@ -44,6 +44,45 @@ class OrderService
         });
     }
 
+    /**
+     * Create an order from a raw items array (for API clients that send cart payload).
+     * Items format: [ ['product_id' => int, 'quantity' => int], ... ]
+     */
+    public function createOrderFromItems($user, array $items, $data)
+    {
+        return DB::transaction(function () use ($user, $items, $data) {
+            $products = collect($items)->map(function ($it) {
+                $product = \App\Models\Product::findOrFail($it['product_id']);
+                return ['product' => $product, 'quantity' => $it['quantity'] ?? 1];
+            });
+
+            $subtotal = $products->sum(fn($entry) => $entry['product']->price * $entry['quantity']);
+            $totalPrice = $subtotal + self::SHIPPING_COST;
+
+            $orderNumber = 'ORD-' . now()->format('YmdHis') . '-' . random_int(1000, 9999);
+
+            $order = Order::create([
+                'user_id' => $user->id,
+                'order_number' => $orderNumber,
+                'total' => $totalPrice,
+                'status' => 'pending',
+                'shipping_address' => ['address' => $data['address']],
+                'payment_method' => $data['payment_method'] ?? null,
+            ]);
+
+            foreach ($products as $entry) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $entry['product']->id,
+                    'quantity' => $entry['quantity'],
+                    'price' => $entry['product']->price,
+                ]);
+            }
+
+            return $order;
+        });
+    }
+
     public function confirmPayment(Order $order)
     {
         return DB::transaction(function () use ($order) {
