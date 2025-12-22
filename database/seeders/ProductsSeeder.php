@@ -31,7 +31,7 @@ class ProductsSeeder extends Seeder
                 'category_id' => Category::where('name', $p['category'])->first()->id,
                 'name' => $p['name'],
                 'slug' => Str::slug($p['name']),
-                'description' => 'Fresh and high quality ' . $p['name'],
+                'description' => 'Menu' . $p['name'],
                 'price' => $p['price'],
                 'stock' => 100,
                 'is_active' => true,

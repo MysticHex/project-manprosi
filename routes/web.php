@@ -8,6 +8,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -68,3 +69,15 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// In case routes/api.php is not loaded, provide API endpoints under /api
+// Use the stateless 'api' middleware group so CSRF/session middleware are not applied.
+Route::prefix('api')->middleware('api')->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/user', [AuthController::class, 'user']);
+        Route::post('/checkout', [CheckoutController::class, 'store']);
+    });
+});
