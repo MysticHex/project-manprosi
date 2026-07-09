@@ -49,6 +49,20 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **[byte5](https://byte5.de)**
 - **[OP.GG](https://op.gg)**
 
+## Deploy on AWS EC2 (Docker)
+
+1. Provision an EC2 instance (Amazon Linux 2023 / Ubuntu), install Docker + Docker Compose plugin.
+2. Open port `80` (and `22` for SSH) in the instance's security group.
+3. Clone this repo onto the instance.
+4. `cp .env.production.example .env` and fill in `DB_PASSWORD`, `DB_ROOT_PASSWORD`, `APP_URL`, mail/AWS creds as needed.
+5. Generate an app key: `docker compose run --rm app php artisan key:generate`.
+6. `docker compose up -d --build`.
+7. Visit `http://<ec2-public-ip>`.
+
+The stack is `nginx` (port 80) + `app` (php-fpm) + `db` (MySQL 8, persisted in a named volume). Migrations run automatically on container start via `docker/entrypoint.sh`.
+
+Not included: HTTPS/TLS termination, queue worker container, scheduler cron. Add these separately (e.g. an ALB + ACM cert, or Certbot + nginx) if needed.
+
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
