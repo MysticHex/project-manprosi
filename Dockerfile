@@ -1,10 +1,19 @@
 # --- Stage: composer deps ---
 FROM composer:2 AS composer
+ARG WITH_DEV=false
 WORKDIR /app
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
+RUN if [ "$WITH_DEV" = "true" ]; then \
+        composer install --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs; \
+    else \
+        composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs; \
+    fi
 COPY . .
-RUN composer dump-autoload --optimize --no-dev
+RUN if [ "$WITH_DEV" = "true" ]; then \
+        composer dump-autoload --optimize; \
+    else \
+        composer dump-autoload --optimize --no-dev; \
+    fi
 
 # --- Stage: frontend build ---
 FROM node:20-alpine AS node
